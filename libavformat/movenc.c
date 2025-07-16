@@ -24,6 +24,9 @@
 #include <stdint.h>
 #include <inttypes.h>
 
+// DEBUG
+#include <syslog.h>
+
 #include "movenc.h"
 #include "avformat.h"
 #include "avio_internal.h"
@@ -6038,6 +6041,7 @@ static int mov_create_chapter_track(AVFormatContext *s, int tracknum)
         int64_t end = av_rescale_q(c->end, c->time_base, (AVRational){1,MOV_TIMESCALE});
         pkt.pts = pkt.dts = av_rescale_q(c->start, c->time_base, (AVRational){1,MOV_TIMESCALE});
         pkt.duration = end - pkt.dts;
+        syslog(LOG_WARNING, "Duration written by FFMPEG: %ld", pkt.duration);
 
         if ((t = av_dict_get(c->metadata, "title", NULL, 0))) {
             static const char encd[12] = {
