@@ -31,6 +31,8 @@
 #include "libavutil/internal.h"
 #include "libavutil/mathematics.h"
 
+#include <syslog.h>
+
 /**
  * @file
  * muxing functions for use within libavformat
@@ -135,6 +137,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
+    syslog(LOG_WARNING, "FFMPEG allocating output context.");
     AVFormatContext *s = avformat_alloc_context();
     int ret = 0;
 
