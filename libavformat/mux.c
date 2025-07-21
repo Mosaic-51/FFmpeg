@@ -137,7 +137,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
-    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 14:58).");
+    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 14:58) format: %s.", format);
     AVFormatContext *s = avformat_alloc_context();
     int ret = 0;
 
