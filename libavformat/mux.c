@@ -137,7 +137,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
-    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 11:41).");
+    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 13:20).");
     AVFormatContext *s = avformat_alloc_context();
     int ret = 0;
 
@@ -729,10 +729,12 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     if ((pkt->flags & AV_PKT_FLAG_UNCODED_FRAME)) {
+        syslog(LOG_WARNING, "FFMPEG uncoded");
         AVFrame **frame = (AVFrame **)pkt->data;
         av_assert0(pkt->size == sizeof(*frame));
         ret = s->oformat->write_uncoded_frame(s, pkt->stream_index, frame, 0);
     } else {
+        syslog(LOG_WARNING, "FFMPEG coded");
         ret = s->oformat->write_packet(s, pkt);
     }
 
@@ -1129,10 +1131,12 @@ static int write_packet_common(AVFormatContext *s, AVStream *st, AVPacket *pkt, 
 #endif
 
     if (interleaved) {
+        syslog(LOG_WARNING, "FFMPEG interleaved");
         if (pkt->dts == AV_NOPTS_VALUE && !(s->oformat->flags & AVFMT_NOTIMESTAMPS))
             return AVERROR(EINVAL);
         return interleaved_write_packet(s, pkt, 0);
     } else {
+        syslog(LOG_WARNING, "FFMPEG NOT interleaved");
         return write_packet(s, pkt);
     }
 }
