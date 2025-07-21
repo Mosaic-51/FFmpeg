@@ -137,7 +137,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
-    syslog(LOG_WARNING, "FFMPEG allocating output context.");
+    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 11:41).");
     AVFormatContext *s = avformat_alloc_context();
     int ret = 0;
 
@@ -573,6 +573,7 @@ static int compute_muxer_pkt_fields(AVFormatContext *s, AVStream *st, AVPacket *
         pkt->duration = 0;
     }
 
+    syslog(LOG_WARNING, "Duration written by FFMPEG (MUX 1): %ld", pkt->duration);
     /* duration field */
     if (pkt->duration == 0) {
         ff_compute_frame_duration(s, &num, &den, st, NULL, pkt);
@@ -580,6 +581,7 @@ static int compute_muxer_pkt_fields(AVFormatContext *s, AVStream *st, AVPacket *
             pkt->duration = av_rescale(1, num * (int64_t)st->time_base.den * st->codec->ticks_per_frame, den * (int64_t)st->time_base.num);
         }
     }
+    syslog(LOG_WARNING, "Duration written by FFMPEG (MUX 2): %ld", pkt->duration);
 
     if (pkt->pts == AV_NOPTS_VALUE && pkt->dts != AV_NOPTS_VALUE && delay == 0)
         pkt->pts = pkt->dts;
