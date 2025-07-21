@@ -5444,6 +5444,7 @@ static int check_pkt(AVFormatContext *s, AVPacket *pkt)
 
 int ff_mov_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
+    syslog(LOG_WARNING, "FFMPEG ff_mov_write_packet");
     MOVMuxContext *mov = s->priv_data;
     AVIOContext *pb = s->pb;
     MOVTrack *trk = &mov->tracks[pkt->stream_index];
@@ -5868,6 +5869,7 @@ static int mov_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
     MOVMuxContext *mov = s->priv_data;
     MOVTrack *trk;
+    syslog(LOG_WARNING, "FFMPEG mov_write_packet");
 
     if (!pkt) {
         mov_flush_fragment(s, 1);
