@@ -137,7 +137,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
-    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 13:20).");
+    syslog(LOG_WARNING, "FFMPEG allocating output context (2025-07-21 14:10).");
     AVFormatContext *s = avformat_alloc_context();
     int ret = 0;
 
@@ -734,8 +734,8 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
         av_assert0(pkt->size == sizeof(*frame));
         ret = s->oformat->write_uncoded_frame(s, pkt->stream_index, frame, 0);
     } else {
-        syslog(LOG_WARNING, "FFMPEG coded");
-        ret = s->oformat->write_packet(s, pkt);
+        syslog(LOG_WARNING, "FFMPEG coded");  // we are here
+        ret = s->oformat->write_packet(s, pkt);  // function we would like to find
     }
 
     if (s->pb && ret >= 0) {
@@ -1136,7 +1136,7 @@ static int write_packet_common(AVFormatContext *s, AVStream *st, AVPacket *pkt, 
             return AVERROR(EINVAL);
         return interleaved_write_packet(s, pkt, 0);
     } else {
-        syslog(LOG_WARNING, "FFMPEG NOT interleaved");
+        syslog(LOG_WARNING, "FFMPEG NOT interleaved");   // we are here
         return write_packet(s, pkt);
     }
 }
@@ -1314,6 +1314,7 @@ int av_get_output_timestamp(struct AVFormatContext *s, int stream,
 int ff_write_chained(AVFormatContext *dst, int dst_stream, AVPacket *pkt,
                      AVFormatContext *src, int interleave)
 {
+    syslog(LOG_WARNING, "FFMPEG ff_write_chained called.");
     AVPacket local_pkt;
     int ret;
 
