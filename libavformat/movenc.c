@@ -5452,6 +5452,7 @@ int ff_mov_write_packet(AVFormatContext *s, AVPacket *pkt)
     AVProducerReferenceTime *prft;
     unsigned int samples_in_chunk = 0;
     int size = pkt->size, ret = 0, offset = 0;
+    syslog(LOG_WARNING, "FFMPEG ff_mov_write_packet size %d", size);
     int prft_size;
     uint8_t *reformatted_data = NULL;
 
@@ -5695,6 +5696,8 @@ int ff_mov_write_packet(AVFormatContext *s, AVPacket *pkt)
                    pkt->stream_index, pkt->dts);
     }
     trk->track_duration = pkt->dts - trk->start_dts + pkt->duration;
+
+    syslog(LOG_WARNING, "FFMPEG ff_mov_write_packet trk->track_duration %ld", trk->track_duration);
     trk->last_sample_is_subtitle_end = 0;
 
     if (pkt->pts == AV_NOPTS_VALUE) {
@@ -5816,9 +5819,12 @@ static int mov_write_single_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     if (trk->entry && pkt->stream_index < s->nb_streams)
+    {
         frag_duration = av_rescale_q(pkt->dts - trk->cluster[0].dts,
                 s->streams[pkt->stream_index]->time_base,
                 AV_TIME_BASE_Q);
+        syslog(LOG_WARNING, "FFMPEG movenc.c frag_duration %ld", frag_duration);
+    }
     if ((mov->max_fragment_duration &&
                 frag_duration >= mov->max_fragment_duration) ||
             (mov->max_fragment_size && mov->mdat_size + size >= mov->max_fragment_size) ||
