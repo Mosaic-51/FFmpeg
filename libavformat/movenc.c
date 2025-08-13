@@ -2434,8 +2434,15 @@ static int mov_write_stts_tag(AVIOContext *pb, MOVTrack *track)
     ffio_wfourcc(pb, "stts");
     avio_wb32(pb, 0); /* version & flags */
     avio_wb32(pb, entries); /* entry count */
+    // Having zero in the count field here is addressing
+    // https://github.com/Mosaic-51/firmware/issues/960
+    #define MOSAIC_ZERO_STTS
     for (i = 0; i < entries; i++) {
+        #ifdef MOSAIC_ZERO_STTS
+        avio_wb32(pb, 0);
+        #else
         avio_wb32(pb, stts_entries[i].count);
+        #endif
         avio_wb32(pb, stts_entries[i].duration);
     }
     av_free(stts_entries);
